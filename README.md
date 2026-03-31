@@ -1,66 +1,44 @@
-## Foundry
+# StellaSwap Security Review
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+StellaSwap is the leading DEX on Moonbeam (Polkadot), powered by a Vote-Escrow (VE) 3,3 model and a modular V4 AMM built on Algebra's Integral engine.
 
-Foundry consists of:
+## In-Scope Contracts
 
-- **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
-- **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
-- **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
-- **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+| Contract | Address | Type |
+|---|---|---|
+| veNFT | `0xfa62B5962a7923A2910F945268AA65C943D131e9` | Direct |
+| Algebra Vault Factory | `0x9B81835b2f7B51447D5E4C07Ae18f05dfe627150` | Direct |
+| stGLMR Funds Manager | `0x3069A7955408D261069F7D4ed3eFdB9Ea8D95d7b` | Proxy |
+| Voter | `0x091a177FbC5f493920c2e027eDc89658c1cED495` | Proxy |
 
-## Documentation
+## Build
 
-https://book.getfoundry.sh/
-
-## Usage
-
-### Build
-
-```shell
-$ forge build
+```bash
+forge build
 ```
 
-### Test
-
-```shell
-$ forge test
+Note: OpenZeppelin submodules must be pinned to v4.8.0. If builds fail after `git submodule update`, run:
+```bash
+cd lib/openzeppelin-contracts && git checkout v4.8.0 && cd ../..
+cd lib/openzeppelin-contracts-upgradeable && git checkout v4.8.0 && cd ../..
 ```
 
-### Format
+## PoC Tests
 
-```shell
-$ forge fmt
+```bash
+MOONBEAM_RPC_URL="https://rpc.api.moonbeam.network" forge test --match-contract PoCTest -vvv
 ```
 
-### Gas Snapshots
+See `poc.md` for detailed PoC writing instructions.
 
-```shell
-$ forge snapshot
+## Project Structure
+
 ```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
+src/
+  algebra/       - Algebra Community Vault & Factory (Integral V4 fee handling)
+  stglmr/        - stGLMR liquid staking (FundsManager, Ledger)
+  venft/          - veSTELLA NFT (vote-escrow locking)
+  voter/          - Voting contract, IncentiveManager, rewards
+  interfaces/    - Shared interfaces
+  libraries/     - Shared libraries
 ```

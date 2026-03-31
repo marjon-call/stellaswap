@@ -18,3 +18,9 @@ docs/
 .env
 .env.*
 !.env.example
+
+# Scripts
+docsGetter.py
+
+# Nexus build artifact
+nexus_build_result.yaml
